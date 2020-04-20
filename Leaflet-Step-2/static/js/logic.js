@@ -1,5 +1,6 @@
 // Creating map object
 var QuakeMarkers=[]
+var FaultLinesMarkers=[];
 
 
 // Adding tile layer to the map
@@ -66,24 +67,25 @@ d3.json(quake_data_url, function(response) {
 
   let EarthquakeData=response;
 
-  d3.json(faultLines_data_url, function(response) {
-    
-    let FaultLinesData=response;
+  d3.json(faultLines_data_url, function(fresponse) {
+    console.log(fresponse);    
+    let FaultLinesData=fresponse;
 
     buildLayers(EarthquakeData,FaultLinesData);
     });
 
   });
+
 }
 
 
   function buildLayers(EarthquakeData, FaultLinesData) {
   // Loop through data
-  for (var i = 0; i < response.features.length; i++) {
+  for (var i = 0; i < EarthquakeData.features.length; i++) {
 
     // Set the data location property to a variable
-    var location = response.features[i].geometry;
-    var property = response.features[i].properties;
+    var location = EarthquakeData.features[i].geometry;
+    var property = EarthquakeData.features[i].properties;
     // Check for location property
     if (location) {
      
@@ -103,20 +105,58 @@ d3.json(quake_data_url, function(response) {
 
   }
 
-  var EarthQuakesLayer = L.layerGroup(QuakeMarkers)
-  var  overlayMaps = {
-          "EarthQuakes": EarthQuakesLayer };
-  
+  for (var i = 0; i < FaultLinesData.features.length; i++) {
+    FaultLinesMarkers.push(L.geoJSON(FaultLinesData,{  
+      style: function(feature){
+          return {
+              color:"orange",
+              fillColor: "white",
+              fillOpacity:0
+          }
+      },      
+      onEachFeature: function(feature,layer){
+          console.log(feature.coordinates);
+          layer.bindPopup("Plate Name: "+feature.properties.PlateName);
+      }
+    })
+    );
+  }
 
-  var myMap = L.map("map", {
-    center: [37.09, -95.71],
-    zoom: 4,
-    layers: [light, EarthQuakesLayer]
-  });
+buildMap(QuakeMarkers,FaultLinesMarkers)
 
-  L.control.layers(baseMaps, overlayMaps, {
-  collapsed: false
+  }
+
+function buildMap(QuakeMarkers,FaultLinesMarkers){
+var EarthQuakesLayer = L.layerGroup(QuakeMarkers)
+var FaultLinesLayer = L.layerGroup(FaultLinesMarkers)
+
+var  overlayMaps = {
+  "EarthQuakes": EarthQuakesLayer, 
+  "FaultLines": FaultLinesLayer
+};
+var myMap = L.map("map", {
+  center: [37.09, -95.71],
+  zoom: 4,
+  layers: [light, EarthQuakesLayer]
+});
+
+L.control.layers(baseMaps, overlayMaps, {
+  collapsed: true
   }).addTo(myMap);
 
+  // let legend = L.control({position: 'bottomright'});
+  // legend.onAdd = function(map) {
+  //   let div = L.DomUtil.create('div', 'info legend'),
+  //     grades = [0, 1, 2, 3, 4, 5],
+  //     labels = ["0-1", "1-2", "2-3", "3-4", "4-5", "5+"];
 
-}
+  //   for (let i = 0; i < grades.length; i++) {
+  //     div.innerHTML += '<i style="background:' + colorchoice(grades[i] + 1) + '"></i> ' +
+  //             grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+  //   }
+
+  //   return div;
+  // };
+  // legend.addTo(map);
+
+  }
