@@ -107,29 +107,48 @@ d3.json(quake_data_url, function(response) {
   function DrawFaultLines(feature, layer) {
     L.polyline(feature.geometry.coordinates);
 }
-// let FaultLinesMarkers = L.geoJSON(FaultLinesData, {
-//   onEachFeature: DrawFaultLines,
-//   style: {
-//     weight: 2,
-//     color: 'blue'
+// let FaultLinesMarkers = L.geoJSON(FaultLinesData,{  
+//   style: function(feature){
+//       return {
+//           color:"orange",
+//           fillColor: "white",
+//           fillOpacity:0
+//       }
+//   },      
+//   onEachFeature: function(feature,layer){
+//       console.log(feature.coordinates);
+//       layer.bindPopup("Plate Name: "+feature.properties.PlateName);
 //   }
 // });
-let FaultLinesMarkers = L.geoJSON(FaultLinesData,{  
-  style: function(feature){
-      return {
-          color:"orange",
-          fillColor: "white",
-          fillOpacity:0
-      }
-  },      
-  onEachFeature: function(feature,layer){
-      console.log(feature.coordinates);
-      layer.bindPopup("Plate Name: "+feature.properties.PlateName);
+let FaultLinesMarkers  = L.choropleth(FaultLinesData, {
+
+  // Define what  property in the features to use
+  valueProperty: "Name",
+
+  // Set color scale
+  scale: ["#ffffb2", "#b10026"],
+
+  // Number of breaks in step range
+  steps: 10,
+
+  // q for quartile, e for equidistant, k for k-means
+  mode: "q",
+  style: {
+    // Border color
+    color: "#fff",
+    weight: 1,
+    fillOpacity: 0.8
+  },
+
+  // Binding a pop-up to each layer
+  onEachFeature: function(feature, layer) {
+    layer.bindPopup("Place: " + feature.properties.Name + "<br>Source:<br>" +
+      "$" + feature.properties.Source);
   }
 });
 buildMap(QuakeMarkers,FaultLinesMarkers)
 
-  }
+}
 
 function buildMap(QuakeMarkers,FaultLinesMarkers){
 var EarthQuakesLayer = L.layerGroup(QuakeMarkers)
