@@ -116,11 +116,6 @@ let FaultLinesLayer = L.geoJSON(FaultLinesData.features, {
   }
 });
 
-// let EarthQuakesLayer = L.geoJSON(EarthquakeData, {
-//   onEachFeature: DrawEarthQuakeLayer
-// });
-
-
 buildMap(QuakeMarkers,FaultLinesLayer)
 
 }
@@ -138,7 +133,7 @@ var myMap = L.map("map", {
   //center: [37.09, -95.71],
   center: [39.8283, -98.5785],
   zoom: 3,
-  layers: [light, FaultLinesLayer]
+  layers: [light, EarthQuakesLayer]
 });
 
 L.control.layers(baseMaps, overlayMaps, {

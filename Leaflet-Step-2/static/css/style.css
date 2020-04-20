@@ -8,24 +8,16 @@ body,
 html {
   height: 100%;
 }
-
-
-.legend {
-  line-height: 18px;
-  color: #555;
-  background-color: white;
-  padding: 10px;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
-  border-radius: 8px;
+nav{
+  background-color: #DAF7A6;
 }
 
-.legend i {
-  width: 18px;
-  height: 18px;
-  float: left;
-  margin-right: 8px;
-  opacity: 0.7;
+.myhead
+ {
+text-align: center;
+background-color:#EEF8DC;
+padding-top: 30px;
+padding-bottom: 30px;
 }
 
 .leaflet-bottom.leaflet-left {
