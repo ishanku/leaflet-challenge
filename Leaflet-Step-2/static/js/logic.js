@@ -1,11 +1,6 @@
 // Creating map object
 var QuakeMarkers=[]
-// var myMap = L.map("map", {
-//   center: [
-//       37.09, -95.71
-//     ],
-//   zoom: 3
-// });
+
 
 // Adding tile layer to the map
 var Street=L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
@@ -37,7 +32,8 @@ var baseMaps = {
 
 
 
-var data_url="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
+var quake_data_url="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
+let faultLines_data_url = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
 
 function markerSize(mag) {
   var rmag=mag*2;
@@ -62,10 +58,17 @@ function colorchoice(mag){
 
   return color;
 }
+d3.json(faultLines_data_url, function(response) {
+console.log(response);
+// let faultLines = L.geoJSON(faultLineData, {
+//   onEachFeature: onEachFaultLine,
+//   style: {
+//     weight: 2,
+//     color: 'blue'
+//   }});
+});
 
-
-
-d3.json(data_url, function(response) {
+d3.json(quake_data_url, function(response) {
 
 console.log(response);
   // Loop through data
