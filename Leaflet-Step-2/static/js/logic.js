@@ -58,19 +58,26 @@ function colorchoice(mag){
 
   return color;
 }
-d3.json(faultLines_data_url, function(response) {
-console.log(response);
-// let faultLines = L.geoJSON(faultLineData, {
-//   onEachFeature: onEachFaultLine,
-//   style: {
-//     weight: 2,
-//     color: 'blue'
-//   }});
-});
 
+renderAll(quake_data_url,faultLines_data_url);
+
+function renderAll(quake_data_url,faultLines_data_url){
 d3.json(quake_data_url, function(response) {
 
-console.log(response);
+  let EarthquakeData=response;
+
+  d3.json(faultLines_data_url, function(response) {
+    
+    let FaultLinesData=response;
+
+    buildLayers(EarthquakeData,FaultLinesData);
+    });
+
+  });
+}
+
+
+  function buildLayers(EarthquakeData, FaultLinesData) {
   // Loop through data
   for (var i = 0; i < response.features.length; i++) {
 
@@ -112,4 +119,4 @@ console.log(response);
   }).addTo(myMap);
 
 
-});
+}
