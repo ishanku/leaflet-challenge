@@ -1,6 +1,6 @@
 // Creating map object
 var QuakeMarkers=[]
-var FaultLinesMarkers=[];
+var FaultLinesMarkers;
 
 
 // Adding tile layer to the map
@@ -67,9 +67,9 @@ d3.json(quake_data_url, function(response) {
 
   let EarthquakeData=response;
 
-  d3.json(faultLines_data_url, function(fresponse) {
-    console.log(fresponse);    
-    let FaultLinesData=fresponse;
+  d3.json(faultLines_data_url, function(response) {
+    console.log(response);    
+    let FaultLinesData=response;
 
     buildLayers(EarthquakeData,FaultLinesData);
     });
@@ -104,24 +104,29 @@ d3.json(quake_data_url, function(response) {
   }
 
   }
-
-  for (var i = 0; i < FaultLinesData.features.length; i++) {
-    FaultLinesMarkers.push(L.geoJSON(FaultLinesData,{  
-      style: function(feature){
-          return {
-              color:"orange",
-              fillColor: "white",
-              fillOpacity:0
-          }
-      },      
-      onEachFeature: function(feature,layer){
-          console.log(feature.coordinates);
-          layer.bindPopup("Plate Name: "+feature.properties.PlateName);
+  function DrawFaultLines(feature, layer) {
+    L.polyline(feature.geometry.coordinates);
+}
+// let FaultLinesMarkers = L.geoJSON(FaultLinesData, {
+//   onEachFeature: DrawFaultLines,
+//   style: {
+//     weight: 2,
+//     color: 'blue'
+//   }
+// });
+let FaultLinesMarkers = L.geoJSON(FaultLinesData,{  
+  style: function(feature){
+      return {
+          color:"orange",
+          fillColor: "white",
+          fillOpacity:0
       }
-    })
-    );
+  },      
+  onEachFeature: function(feature,layer){
+      console.log(feature.coordinates);
+      layer.bindPopup("Plate Name: "+feature.properties.PlateName);
   }
-
+});
 buildMap(QuakeMarkers,FaultLinesMarkers)
 
   }
